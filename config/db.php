@@ -24,7 +24,7 @@ try {
     ]);
 }
 catch (Throwable $e) {
-    // In dev, show a friendly message; in prod, log this instead.
+    // Temporarily dump the error to the screen to debug Railway connection
     $pdo = null;
-    error_log('DB connection failed: ' . $e->getMessage());
+    die('DB connection failed: ' . $e->getMessage() . '<br>Tried connecting to: ' . DB_HOST . ' as ' . DB_USER);
 }
