@@ -10,8 +10,10 @@ RUN a2enmod rewrite
 # Install MySQL extensions for PHP
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Change Apache to listen on port 8080 instead of default 80
-RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# Configure Apache to listen on the port provided by Railway or fallback to 8080
+ENV PORT=8080
+RUN sed -i 's/Listen 80/Listen ${PORT}/' /etc/apache2/ports.conf && \
+    sed -i 's/<VirtualHost \*:80>/<VirtualHost \*:${PORT}>/' /etc/apache2/sites-available/000-default.conf
 
-# Expose default Railway port
-EXPOSE 8080
+# Start Apache
+CMD ["apache2-foreground"]
