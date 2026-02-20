@@ -12,7 +12,7 @@
 $in_admin = (basename(getcwd()) === 'admin');
 $base = $in_admin ? '..' : '.';
 ?>
-    <link rel="icon" type="image/png" href="<?php echo $base; ?>/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dmnbjskbz/image/upload/v1771605281/sokosafi/favicon.jpg">
     <!-- Global font to match homepage -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Template vendor styles -->
@@ -37,7 +37,7 @@ endif; ?>
         <div class="d-flex align-items-center justify-content-between h-100">
           <div class="main-logo">
             <a href="<?php echo $base; ?>/index.php?page=home" class="text-decoration-none d-flex align-items-center">
-              <img src="<?php echo $base; ?>/assets/images/logo.png" alt="logo" onerror="this.style.display='none'">
+              <img src="https://res.cloudinary.com/dmnbjskbz/image/upload/v1771605277/sokosafi/logo.png" alt="logo" onerror="this.style.display='none'">
               <span class="fw-bold ms-2">SokoSafi</span>
             </a>
           </div>

@@ -12,7 +12,7 @@ if (!isset($base)) {
                 <div class="col-lg-4 col-md-6">
                     <div class="mb-3">
                         <a href="<?php echo $base; ?>/index.php" class="d-flex align-items-center text-decoration-none">
-                             <img src="<?php echo $base; ?>/assets/images/logo.png" alt="logo" height="38" class="me-2">
+                             <img src="https://res.cloudinary.com/dmnbjskbz/image/upload/v1771605277/sokosafi/logo.png" alt="logo" height="38" class="me-2">
                              <span class="footer-brand h5 fw-bold text-white mb-0">SokoSafi</span>
                         </a>
                     </div>
