@@ -1,0 +1,306 @@
+/* Custom Header Styles - Dark Theme */
+:root {
+  --header-bg: rgba(11, 18, 32, 0.95);
+  /* Dark blue #0b1220 */
+  --header-border: #1f2937;
+  --header-text: #e5e7eb;
+  --header-accent: #b38b59;
+  /* Gold/Bronze custom color */
+  --header-height: 60px;
+  /* Increased height for better touch targets on mobile */
+}
+
+@media (min-width: 992px) {
+  :root {
+    --header-height: 70px;
+    /* Even larger on desktop */
+  }
+}
+
+body {
+  padding-top: var(--header-height);
+}
+
+.header-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--header-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--header-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  will-change: transform;
+}
+
+.main-logo {
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.main-logo img {
+  height: 40px;
+  /* Resized logo for better visibility */
+  width: auto;
+  /* filter: brightness(0) invert(1); removed to show original logo */
+}
+
+.main-logo span {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.8rem;
+  /* Increased font size */
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+/* Search Bar */
+#search-form {
+  max-width: 600px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 0;
+}
+
+#search-form .input-group-text {
+  background: #fff;
+  /* White background */
+  border: 1px solid #1f2937;
+  /* Dark blue border */
+  border-right: none;
+  color: #6b7280;
+  padding: 0.15rem 0.5rem;
+  /* Tighter padding */
+  font-size: 0.85rem;
+}
+
+#search-form .form-control {
+  background: #fff;
+  /* White background */
+  border: 1px solid #1f2937;
+  /* Dark blue border */
+  border-left: none;
+  color: #1f2937;
+  /* Dark text */
+  padding: 0.15rem 0.5rem;
+  font-size: 0.85rem;
+  height: 38px;
+  /* Increased height for touch targets */
+}
+
+#search-form .form-control::placeholder {
+  color: #9ca3af;
+}
+
+#search-form .form-control:focus {
+  background: #fff;
+  border-color: var(--header-accent);
+  box-shadow: 0 0 0 1px var(--header-accent);
+  color: #000;
+}
+
+#search-form .btn-primary {
+  background-color: var(--header-accent);
+  border-color: var(--header-accent);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  height: 38px;
+  line-height: 36px;
+  /* Center text vertically */
+}
+
+#search-form .btn-primary:hover {
+  background-color: #a07a4d;
+  border-color: #a07a4d;
+}
+
+/* Navigation */
+.nav-link-custom {
+  color: #9ca3af !important;
+  font-weight: 500;
+  font-size: 0.85rem;
+  /* Smaller font */
+  padding: 0.2rem 0.6rem !important;
+  /* Tighter padding */
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom.active {
+  color: #000000 !important;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link-custom .fa {
+  margin-right: 0.3rem;
+  color: var(--header-accent);
+  font-size: 0.9rem;
+}
+
+/* Auth Buttons (Login/Register) */
+.header-area .btn-sm {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 38px;
+  font-size: 0.75rem;
+  line-height: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-area .btn-primary {
+  background-color: var(--header-accent);
+  border-color: var(--header-accent);
+}
+
+.header-area .btn-primary:hover {
+  background-color: #a07a4d;
+  border-color: #a07a4d;
+}
+
+.header-area .btn-outline-primary {
+  color: var(--header-accent);
+  border-color: var(--header-accent);
+}
+
+.header-area .btn-outline-primary:hover {
+  background-color: var(--header-accent);
+  border-color: var(--header-accent);
+  color: #fff;
+}
+
+
+/* Mobile Toggle */
+.navbar-toggler {
+  border: 1px solid #374151;
+  padding: 0.5rem 0.75rem;
+  /* Increased padding for touch target */
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 2px rgba(179, 139, 89, 0.5);
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background: #1f2937;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-size: 0.85rem;
+}
+
+.dropdown-item {
+  color: #d1d5db;
+  padding: 0.25rem 1rem;
+}
+
+.dropdown-item:hover {
+  background: #374151;
+  color: #fff;
+}
+
+.dropdown-divider {
+  border-top-color: #374151;
+}
+
+/* Cart Badge */
+.fa-shopping-cart {
+  font-size: 1rem;
+  color: var(--header-accent) !important;
+}
+
+/* Profile Avatar */
+.rounded-circle {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* Fix for card text readability on light theme */
+.card {
+  color: var(--text, #1f2937) !important;
+}
+
+.card .text-muted {
+  color: #6b7280 !important;
+}
+
+/* Footer Brand */
+.footer-brand {
+  font-size: 1.8rem !important;
+  font-weight: 700;
+}
+
+/* Remove blue background from login/register logo wrapper */
+.elegant-icon .icon-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+.elegant-icon .icon-wrapper:before {
+  display: none !important;
+}
+
+/* Ensure logo image is sized appropriately without wrapper constraints */
+.elegant-icon .icon-wrapper img {
+  width: 180px !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Fix for breadcrumb separator text encoding issue */
+.breadcrumb-item+.breadcrumb-item::before {
+  content: '> ';
+  font-family: Arial, sans-serif;
+  color: #6c757d;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 576px) {
+
+  .card-title,
+  .product-card .card-title {
+    font-size: 0.95rem;
+    /* Prevent wrapping on small screens */
+  }
+
+  .h3 {
+    font-size: 1.5rem;
+    /* Adjust heading sizes */
+  }
+}
+
+:root {
+  --bs-breadcrumb-divider: '>';
+}
+
+nav .breadcrumb-item+.breadcrumb-item::before {
+  content: ">" !important;
+  font-family: Arial, sans-serif !important;
+  color: #6c757d;
+}

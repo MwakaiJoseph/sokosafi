@@ -1,0 +1,27 @@
+# IDE and System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and Backups
+logs/
+*.log
+*.bak
+backups_and_logs/
+
+# Build and Temp Files
+temp/
+tmp/
+*.tmp
+*.swp
+
+# Vendor/Dependencies
+vendor/
+node_modules/
+
+# User Configs
+.env
+.env.local
+config/config.local.php

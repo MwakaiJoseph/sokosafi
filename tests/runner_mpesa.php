@@ -1,0 +1,1 @@
+<?php $_GET['page'] = 'mpesa_callback'; $_SERVER['REQUEST_METHOD'] = 'POST'; require 'index.php';

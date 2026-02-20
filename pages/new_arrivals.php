@@ -1,0 +1,56 @@
+<?php
+// New Arrivals Page
+$products = get_products(12); // Fetch 12 newest items (get_products orders by created_at DESC)
+?>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">New Arrivals</h1>
+        <p class="text-muted">Discover the latest additions to our store.</p>
+    </div>
+
+    <?php if (empty($products)): ?>
+        <div class="alert alert-info text-center">No new arrivals found at the moment. Check back later!</div>
+    <?php
+else: ?>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <?php foreach ($products as $product): ?>
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm product-card">
+                        <div class="position-relative">
+                            <a href="<?php echo $base; ?>/index.php?page=product&id=<?php echo $product['id']; ?>">
+                                <img src="<?php echo $base; ?>/<?php echo htmlspecialchars($product['image_path'] ?? 'assets/images/placeholder.jpg'); ?>" 
+                                     class="card-img-top" 
+                                     alt="<?php echo htmlspecialchars($product['name']); ?>"
+                                     style="height: 250px; object-fit: cover;">
+                            </a>
+                            <span class="position-absolute top-0 end-0 bg-success text-white px-2 py-1 m-2 rounded small">NEW</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">
+                                <a href="<?php echo $base; ?>/index.php?page=product&id=<?php echo $product['id']; ?>" class="text-decoration-none text-dark">
+                                    <?php echo htmlspecialchars($product['name']); ?>
+                                </a>
+                            </h5>
+                             <p class="card-text text-muted small mb-2"><?php echo htmlspecialchars($product['categories'] ?? ''); ?></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">KES <?php echo number_format($product['display_price']); ?></span>
+                            </div>
+                        </div>
+                         <div class="card-footer bg-white border-top-0 pt-0">
+                             <form method="post" action="<?php echo $base; ?>/index.php?page=new_arrivals">
+                                <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" name="add_to_cart" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <?php
+    endforeach; ?>
+        </div>
+    <?php
+endif; ?>
+</div>
