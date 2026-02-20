@@ -10,6 +10,10 @@ RUN a2enmod rewrite
 # Install required MySQL extensions for PHP PDO
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
+# Explicitly disable conflicting MPMs and ensure prefork is enabled (Fixes Railway crash)
+RUN a2dismod mpm_event mpm_worker || true \
+    && a2enmod mpm_prefork
+
 # Configure Apache to use the dynamic PORT environment variable at runtime
 RUN echo '#!/bin/bash\n\
     sed -i "s/Listen 80/Listen ${PORT:-80}/g" /etc/apache2/ports.conf\n\
