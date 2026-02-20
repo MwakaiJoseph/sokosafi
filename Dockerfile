@@ -10,5 +10,12 @@ RUN a2enmod rewrite
 # Install required MySQL extensions for PHP PDO
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Inform Railway to route HTTP traffic to Apache's default port 80
-EXPOSE 80
+# Configure Apache to use the dynamic PORT environment variable at runtime
+RUN echo '#!/bin/bash\n\
+    sed -i "s/Listen 80/Listen ${PORT:-80}/g" /etc/apache2/ports.conf\n\
+    sed -i "s/:80/:${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf\n\
+    exec apache2-foreground' > /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
+
+# Run the entrypoint script
+CMD ["/usr/local/bin/entrypoint.sh"]
