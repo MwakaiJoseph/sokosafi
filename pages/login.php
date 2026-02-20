@@ -95,7 +95,7 @@ endif; ?>
                     <div class="col-4">
                         <div class="feature-item-elegant">
                             <div class="feature-icon-elegant security">
-                                <i class="fas fa-shield-check"></i>
+                                <i class="fas fa-shield-alt"></i>
                             </div>
                             <div class="feature-text-elegant">Secure Access</div>
                         </div>
