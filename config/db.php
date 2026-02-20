@@ -6,13 +6,14 @@ if (file_exists(__DIR__ . '/config.local.php')) {
 }
 
 if (!defined('DB_HOST'))
-    define('DB_HOST', 'localhost');
+    define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
 if (!defined('DB_NAME'))
-    define('DB_NAME', 'ecommerce_db');
+    define('DB_NAME', getenv('MYSQLDATABASE') ?: 'ecommerce_db');
 if (!defined('DB_USER'))
-    define('DB_USER', 'root');
+    define('DB_USER', getenv('MYSQLUSER') ?: 'root');
 if (!defined('DB_PASS'))
-    define('DB_PASS', '');
+    // Hosted environments might use an empty or zero password, so we check carefully
+    define('DB_PASS', getenv('MYSQLPASSWORD') !== false ? getenv('MYSQLPASSWORD') : '');
 
 $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
 
