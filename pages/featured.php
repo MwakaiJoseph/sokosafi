@@ -18,10 +18,14 @@ else: ?>
                     <div class="card h-100 border-0 shadow-sm product-card">
                         <div class="position-relative">
                             <a href="<?php echo $base; ?>/index.php?page=product&id=<?php echo $product['id']; ?>">
-                                <img src="<?php echo $base; ?>/<?php echo htmlspecialchars($product['image_path'] ?? 'assets/images/placeholder.jpg'); ?>" 
+                                <?php
+        $img = resolve_product_image($product);
+        $img_src = $img ? (strpos($img, 'http') === 0 ? $img : $base . '/' . ltrim($img, './')) : $base . '/assets/images/placeholder.jpg';
+?>
+                                <img src="<?php echo htmlspecialchars($img_src); ?>" 
                                      class="card-img-top" 
                                      alt="<?php echo htmlspecialchars($product['name']); ?>"
-                                     style="height: 250px; object-fit: cover;">
+                                     style="height: 250px; object-fit: cover;" loading="lazy">
                             </a>
                             <?php if ($product['display_price'] < $product['price']): ?>
                                 <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 rounded small">SALE</span>
