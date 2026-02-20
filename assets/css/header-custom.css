@@ -304,3 +304,10 @@ nav .breadcrumb-item+.breadcrumb-item::before {
   font-family: Arial, sans-serif !important;
   color: #6c757d;
 }
+
+/* Fix password toggle overlap on mobile */
+@media (max-width: 576px) {
+  .login-card #password {
+    padding-right: 4.5rem !important;
+  }
+}
