@@ -24,16 +24,7 @@ try {
     ]);
 }
 catch (Throwable $e) {
-    // Collect available environment variable keys to see what Railway provided
-    $env_keys = implode(', ', array_keys($_ENV));
-    $server_keys = implode(', ', array_keys($_SERVER));
-    $dbg = "DB connection failed: " . $e->getMessage() . "<br>";
-    $dbg .= "Tried connecting to: " . DB_HOST . " as " . DB_USER . "<br>";
-    $dbg .= "Available ENV keys: " . $env_keys . "<br>";
-    $dbg .= "Available SERVER keys: " . $server_keys . "<br>";
-    // Also check getenv manually
-    $dbg .= "getenv('MYSQLHOST') = " . (getenv('MYSQLHOST') ?: 'false/empty');
-    if (!headers_sent())
-        header('HTTP/1.1 500 Internal Server Error');
-    die($dbg);
+    // In dev, show a friendly message; in prod, log this instead.
+    $pdo = null;
+    error_log('DB connection failed: ' . $e->getMessage());
 }
