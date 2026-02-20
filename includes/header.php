@@ -56,8 +56,8 @@ endif; ?>
                 <?php include __DIR__ . '/navbar.php'; ?>
              </div>
              
-            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-              <i class="fa fa-bars fa-lg"></i>
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" style="border-color: rgba(0,0,0,.1);">
+              <i class="fa fa-bars fa-lg text-dark"></i>
             </button>
           </div>
         </div>
