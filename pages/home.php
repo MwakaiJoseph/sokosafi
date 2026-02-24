@@ -99,6 +99,7 @@ catch (Exception $e) {
                                 </div>
                                 <div class="d-grid">
                                     <form method="post" action="index.php?page=cart_add" class="add-to-cart-form">
+                                        <input type="hidden" name="add_to_cart" value="1">
                                         <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                                         <input type="hidden" name="product_id" value="<?php echo (int)$p['id']; ?>">
                                         <input type="hidden" name="quantity" value="1">
@@ -237,7 +238,8 @@ catch (Exception $e) {
                 <h2 class="fw-bold mb-3">Stay Informed</h2>
                 <p class="mb-4 opacity-90">Subscribe to our newsletter for exclusive offers and new collection previews</p>
                 <form id="newsletter-form" method="POST" class="row g-3 justify-content-center">
-                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                    <input type="hidden" name="add_to_cart" value="1">
+                                        <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                     <div class="col-lg-8">
                         <input type="email" name="email" class="form-control form-control-lg" placeholder="Enter your email address" required>
                     </div>

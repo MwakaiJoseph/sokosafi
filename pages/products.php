@@ -72,14 +72,14 @@ try {
               <?php endif; ?>
               <div class="mt-auto">
                 <div class="fw-bold text-primary mb-2"><?php echo format_currency((float)($p['sale_price'] ?? $p['price'])); ?></div>
-                <div class="d-grid gap-2">
-                  <form method="post" action="index.php?page=products">
+                <div class="d-flex flex-column gap-2 w-100">
+                  <form method="post" action="index.php?page=products" class="m-0 p-0 w-100">
                     <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                     <input type="hidden" name="product_id" value="<?php echo (int)$p['id']; ?>">
                     <input type="hidden" name="quantity" value="1">
-                    <button type="submit" name="add_to_cart" class="btn btn-primary w-100">Add to Cart</button>
+                    <button type="submit" name="add_to_cart" class="btn btn-primary w-100 m-0">Add to Cart</button>
                   </form>
-                  <a href="index.php?page=product&id=<?php echo (int)$p['id']; ?>" class="btn btn-outline-primary w-100">View Details</a>
+                  <a href="index.php?page=product&id=<?php echo (int)$p['id']; ?>" class="btn btn-outline-primary w-100 m-0">View Details</a>
                 </div>
               </div>
             </div>
