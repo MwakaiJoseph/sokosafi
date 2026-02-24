@@ -1479,4 +1479,86 @@ function add_item_to_cart_unified($product_id, $quantity = 1) {
     }
 }
 
+
+
+// ==================== AUTHENTICATION ACTIONS ====================
+
+function set_user_remember_token($user_id, $token) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        $stmt = $pdo->prepare('UPDATE users SET remember_token = ? WHERE id = ?');
+        return $stmt->execute([$token, $user_id]);
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false;
+    }
+}
+
+function get_user_by_remember_token($token) {
+    global $pdo;
+    if (!db_has_connection() || empty($token)) return null;
+    try {
+        $stmt = $pdo->prepare('SELECT u.id, u.email, u.first_name, u.last_name, 
+            (SELECT GROUP_CONCAT(r.name SEPARATOR \', \') FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE ur.user_id = u.id) as roles 
+            FROM users u WHERE remember_token = ? AND is_active = 1 LIMIT 1');
+        $stmt->execute([$token]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return null;
+    }
+}
+
+function clear_user_remember_token($user_id) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        $stmt = $pdo->prepare('UPDATE users SET remember_token = NULL WHERE id = ?');
+        return $stmt->execute([$user_id]);
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false;
+    }
+}
+
+function set_password_reset_token($email, $token) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour
+        $stmt = $pdo->prepare('UPDATE users SET reset_token = ?, reset_expires = ? WHERE email = ? AND is_active = 1');
+        $stmt->execute([$token, $expires, $email]);
+        return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false;
+    }
+}
+
+function get_user_by_reset_token($token) {
+    global $pdo;
+    if (!db_has_connection() || empty($token)) return null;
+    try {
+        $now = date('Y-m-d H:i:s');
+        $stmt = $pdo->prepare('SELECT id, email FROM users WHERE reset_token = ? AND reset_expires > ? AND is_active = 1 LIMIT 1');
+        $stmt->execute([$token, $now]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return null;
+    }
+}
+
+function update_user_password($user_id, $password_hash) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        $stmt = $pdo->prepare('UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?');
+        return $stmt->execute([$password_hash, $user_id]);
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false;
+    }
+}
 ?>
