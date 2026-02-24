@@ -251,7 +251,7 @@ $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) 
                                  class="card-img-top" 
                                  alt="<?php echo htmlspecialchars($related['name']); ?>">
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title fw-semibold"><?php echo htmlspecialchars($related['name']); ?></h5>
+                                <h5 class="card-title fw-semibold text-dark text-truncate"><?php echo htmlspecialchars($related['name']); ?></h5>
                                 <p class="card-text text-primary fw-bold mb-auto"><?php echo format_currency((float)($related['sale_price'] ?? $related['price'])); ?></p>
                                 <a href="index.php?page=product&id=<?php echo (int)$related['id']; ?>" class="btn btn-outline-primary mt-2">View Details</a>
                             </div>
