@@ -99,6 +99,7 @@ catch (Exception $e) {
                                 </div>
                                 <div class="d-grid">
                                     <form method="post" action="index.php?page=cart_add" class="add-to-cart-form">
+                                        <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                                         <input type="hidden" name="product_id" value="<?php echo (int)$p['id']; ?>">
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="button" class="btn btn-outline-dark w-100 add-to-cart" data-product-name="<?php echo htmlspecialchars($p['name']); ?>">
