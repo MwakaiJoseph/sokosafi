@@ -60,7 +60,6 @@ endif; ?>
                                        required>
                                 <button type="button" class="toggle-password" aria-label="Show password" title="Show password">
                                     <i class="fas fa-eye"></i>
-                                    <span class="toggle-text">Show</span>
                                 </button>
                             </div>
                         </div>
@@ -466,10 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (icon) {
                 icon.classList.toggle('fa-eye');
                 icon.classList.toggle('fa-eye-slash');
-            }
-            const textEl = this.querySelector('.toggle-text');
-            if (textEl) {
-                textEl.textContent = isHidden ? 'Hide' : 'Show';
             }
             this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
             this.setAttribute('title', isHidden ? 'Hide password' : 'Show password');
