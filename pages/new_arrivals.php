@@ -41,11 +41,11 @@ else: ?>
                             </div>
                         </div>
                          <div class="card-footer bg-white border-top-0 pt-0">
-                             <form method="post" action="<?php echo $base; ?>/index.php?page=new_arrivals">
+                             <form method="post" action="<?php echo $base; ?>/index.php?page=new_arrivals" class="m-0 p-0 w-100">
                                 <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                 <input type="hidden" name="quantity" value="1">
-                                <button type="submit" name="add_to_cart" class="btn btn-outline-primary w-100 rounded-pill">
+                                <button type="submit" name="add_to_cart" class="btn btn-outline-primary w-100 m-0 rounded-pill">
                                     <i class="fas fa-shopping-cart me-2"></i> Add to Cart
                                 </button>
                             </form>
