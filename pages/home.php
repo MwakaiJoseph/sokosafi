@@ -296,6 +296,8 @@ catch (Exception $e) {
                         const cartBadge = document.querySelector('.badge.bg-primary') || createCartBadge();
                         cartBadge.textContent = parseInt(data.cart_count ?? '0');
                         showToast(`${productName} added to cart!`);
+                    } else if (data && data.redirect) {
+                        window.location.href = data.redirect;
                     } else {
                         showToast(data?.error || 'Unable to add to cart.');
                     }

@@ -150,6 +150,7 @@ $cart_error = null;
 // JSON API for add-to-cart without redirect
 if ($page === 'cart_add' && (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') && isset($_POST['add_to_cart'])) {
     header('Content-Type: application/json');
+    if (!isset($_SESSION['user']['id'])) { echo json_encode(['ok' => false, 'redirect' => 'index.php?page=login']); exit; }
     $product_id = (int)($_POST['product_id'] ?? 0);
     $quantity = max(1, (int)($_POST['quantity'] ?? 1));
     if ($product_id <= 0) {
@@ -174,6 +175,7 @@ if ($page === 'cart_add' && (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') && i
 
 // Support add-to-cart from any page with the expected POST fields (non-AJAX)
 if ((($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') && isset($_POST['add_to_cart']) && $page !== 'cart_add') {
+    if (!isset($_SESSION['user']['id'])) { $_SESSION['flash'] = 'Please login to add items to your cart.'; header('Location: index.php?page=login'); exit; }
     $product_id = (int)($_POST['product_id'] ?? 0);
     $quantity = max(1, (int)($_POST['quantity'] ?? 1));
     if ($product_id <= 0) {
