@@ -46,6 +46,7 @@ if (!isset($base)) {
             <span class="d-none d-lg-inline"><?php echo htmlspecialchars($user_name); ?></span>
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><a class="dropdown-item" href="<?php echo $base; ?>/index.php?page=profile"><i class="fa fa-user me-2"></i> My Profile</a></li>
             <?php if ($is_admin): ?>
                 <li><a class="dropdown-item" href="<?php echo $base; ?>/admin/dashboard.php"><i class="fa fa-cog me-2"></i> Admin Panel</a></li>
                 <li><hr class="dropdown-divider"></li>
