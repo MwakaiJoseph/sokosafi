@@ -106,18 +106,19 @@ function handle_google_oauth()
             if ($existing_user) {
                 link_google_id_to_user($existing_user['id'], $google_id);
                 $user = get_user_by_google_id($google_id); // Re-fetch to normalize structure
+
+                // Fallback in case account is locked/inactive
+                if (!$user) {
+                    $_SESSION['flash'] = 'Your account has been deactivated. Please contact support.';
+                    header('Location: index.php?page=login');
+                    exit;
+                }
             }
             else {
                 // Completely new user
                 $new_id = create_google_user($email, $given_name, $family_name, $google_id);
                 if ($new_id) {
-                    $user = [
-                        'id' => $new_id,
-                        'email' => $email,
-                        'first_name' => $given_name,
-                        'last_name' => $family_name,
-                        'roles' => 'customer'
-                    ];
+                    $user = get_user_by_google_id($google_id);
                 }
                 else {
                     $_SESSION['flash'] = 'Failed to create an account from your Google profile.';
