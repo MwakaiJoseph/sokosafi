@@ -8,8 +8,11 @@ function handle_google_oauth()
     $client_id = getenv('GOOGLE_CLIENT_ID');
     $client_secret = getenv('GOOGLE_CLIENT_SECRET');
 
-    // Determine exact redirect URI
+    // Determine exact redirect URI (Handle reverse proxy correctly)
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $protocol = 'https';
+    }
     $host = $_SERVER['HTTP_HOST'];
     $redirect_uri = $protocol . '://' . $host . '/index.php?page=google_oauth';
 
