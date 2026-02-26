@@ -7,6 +7,21 @@ $cart_error = $cart_error ?? null; // Provided by index.php when POST fails
 
 // Get related products for recommendation
 $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) : [];
+
+// Reviews
+$reviews = [];
+$review_stats = ['avg' => 0, 'count' => 0];
+$has_purchased = false;
+$user_id = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
+
+if ($id && db_has_connection()) {
+    $reviews = get_product_reviews($id);
+    $review_stats = get_product_average_rating($id);
+    if ($user_id) {
+        $has_purchased = has_user_purchased_product($user_id, $id);
+    }
+}
+$show_reviews_tab = isset($_SESSION['review_success']) || isset($_SESSION['review_error']);
 ?>
 
 <section class="container py-5">
@@ -52,9 +67,16 @@ $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) 
                     <!-- Rating -->
                     <div class="rating mb-3">
                         <div class="stars">
-                            <?php for ($i = 0; $i < 5; $i++) { echo '<i class="far fa-star text-warning"></i>'; } ?>
+                            <?php 
+                            $avg = $review_stats['avg'];
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $avg) { echo '<i class="fas fa-star text-warning"></i>'; }
+                                elseif ($i - 0.5 <= $avg) { echo '<i class="fas fa-star-half-alt text-warning"></i>'; }
+                                else { echo '<i class="far fa-star text-warning"></i>'; }
+                            } 
+                            ?>
                         </div>
-                        <span class="text-muted ms-2">0 reviews</span>
+                        <span class="text-muted ms-2"><?php echo $review_stats['count']; ?> review<?php echo $review_stats['count'] !== 1 ? 's' : ''; ?></span>
                     </div>
 
                     <!-- Price -->
@@ -173,7 +195,7 @@ $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) 
                     <div class="card-body p-4">
                         <ul class="nav nav-tabs nav-underline mb-4" id="productTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                                <button class="nav-link <?php echo !$show_reviews_tab ? 'active' : ''; ?>" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
                                     <i class="fas fa-info-circle me-2"></i>Product Details
                                 </button>
                             </li>
@@ -183,14 +205,14 @@ $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) 
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                                <button class="nav-link <?php echo $show_reviews_tab ? 'active' : ''; ?>" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
                                     <i class="fas fa-star me-2"></i>Customer Reviews
                                 </button>
                             </li>
                         </ul>
                         
                         <div class="tab-content" id="productTabsContent">
-                            <div class="tab-pane fade show active" id="details" role="tabpanel">
+                            <div class="tab-pane fade <?php echo !$show_reviews_tab ? 'show active' : ''; ?>" id="details" role="tabpanel">
                                 <p class="text-muted"><?php echo htmlspecialchars($product['description'] ?? 'This premium product combines exceptional quality with innovative design. Crafted with attention to detail and built to last, it offers outstanding performance and reliability.'); ?></p>
                                 <p class="text-muted mb-0">Experience the perfect blend of style and functionality with this carefully designed product.</p>
                             </div>
@@ -224,12 +246,86 @@ $related_products = ($id && db_has_connection()) ? get_related_products($id, 4) 
                                 </div>
                             </div>
                             
-                            <div class="tab-pane fade" id="reviews" role="tabpanel">
-                                <div class="text-center py-4">
-                                    <i class="fas fa-comments text-muted fs-1 mb-3"></i>
-                                    <p class="text-muted">No reviews yet. Be the first to review this product!</p>
-                                    <button class="btn btn-outline-primary">Write a Review</button>
-                                </div>
+                            <div class="tab-pane fade <?php echo $show_reviews_tab ? 'show active' : ''; ?>" id="reviews" role="tabpanel">
+                                <?php if (isset($_SESSION['review_success'])): ?>
+                                    <div class="alert alert-success">
+                                        <?php echo htmlspecialchars($_SESSION['review_success']); unset($_SESSION['review_success']); ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <?php if (isset($_SESSION['review_error'])): ?>
+                                    <div class="alert alert-danger">
+                                        <?php echo htmlspecialchars($_SESSION['review_error']); unset($_SESSION['review_error']); ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (empty($reviews)): ?>
+                                    <div class="text-center py-4 border-bottom mb-4">
+                                        <i class="fas fa-comments text-muted fs-1 mb-3"></i>
+                                        <p class="text-muted">No reviews yet.</p>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="reviews-list mb-5">
+                                        <?php foreach ($reviews as $rev): ?>
+                                            <div class="review-item border-bottom py-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0 fw-bold"><?php echo htmlspecialchars($rev['title']); ?></h6>
+                                                    <span class="text-muted small"><?php echo date('M d, Y', strtotime($rev['created_at'])); ?></span>
+                                                </div>
+                                                <div class="stars mb-2">
+                                                    <?php for($i=1; $i<=5; $i++): ?>
+                                                        <i class="<?php echo $i <= $rev['rating'] ? 'fas' : 'far'; ?> fa-star text-warning small"></i>
+                                                    <?php endfor; ?>
+                                                </div>
+                                                <p class="text-muted mb-1"><?php echo nl2br(htmlspecialchars($rev['body'])); ?></p>
+                                                <small class="text-secondary">- <?php echo htmlspecialchars($rev['first_name'] . ' ' . $rev['last_name']); ?></small>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Review Form Context -->
+                                <?php if ($has_purchased): ?>
+                                    <div class="review-form-wrapper bg-light p-4 rounded mt-4">
+                                        <h5 class="fw-bold mb-3">Write a Customer Review</h5>
+                                        <form method="post" action="index.php?page=product&id=<?php echo (int)$id; ?>">
+                                            <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                                            <input type="hidden" name="action" value="submit_review">
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label d-block fw-semibold border-bottom pb-2">Rate this product</label>
+                                                <!-- Simplified radio-based star rating -->
+                                                <div class="rating-radio-group d-flex gap-4">
+                                                    <label class="text-warning cursor-pointer"><input type="radio" name="rating" value="1" required> <i class="fas fa-star"></i> 1</label>
+                                                    <label class="text-warning cursor-pointer"><input type="radio" name="rating" value="2"> <i class="fas fa-star"></i> 2</label>
+                                                    <label class="text-warning cursor-pointer"><input type="radio" name="rating" value="3"> <i class="fas fa-star"></i> 3</label>
+                                                    <label class="text-warning cursor-pointer"><input type="radio" name="rating" value="4"> <i class="fas fa-star"></i> 4</label>
+                                                    <label class="text-warning cursor-pointer"><input type="radio" name="rating" value="5"> <i class="fas fa-star"></i> 5</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="review_title" class="form-label fw-semibold">Review Title</label>
+                                                <input type="text" class="form-control" id="review_title" name="title" required placeholder="What's most important to know?">
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="review_body" class="form-label fw-semibold">Review Content</label>
+                                                <textarea class="form-control" id="review_body" name="body" rows="4" required placeholder="What did you like or dislike? What did you use this product for?"></textarea>
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-primary px-4">Submit Review</button>
+                                        </form>
+                                    </div>
+                                <?php elseif ($user_id): ?>
+                                    <div class="alert alert-info mt-4">
+                                        <i class="fas fa-info-circle me-2"></i> You must purchase this item to write a review.
+                                    </div>
+                                <?php else: ?>
+                                    <div class="alert alert-secondary mt-4">
+                                        <i class="fas fa-lock me-2"></i> Please <a href="index.php?page=login" class="alert-link">login</a> to write a review.
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

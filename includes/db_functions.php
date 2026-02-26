@@ -1625,4 +1625,56 @@ function create_google_user($email, $first_name, $last_name, $google_id) {
         return false;
     }
 }
+
+// ---------------------------------------------------------
+// CUSTOMER REVIEWS
+// ---------------------------------------------------------
+
+function has_user_purchased_product($user_id, $product_id) {
+    global $pdo;
+    if (!db_has_connection() || !$user_id || !$product_id) return false;
+    try {
+        $stmt = $pdo->prepare('
+            SELECT 1 FROM orders o JOIN order_items oi ON o.id = oi.order_id
+            WHERE o.user_id = ? AND oi.product_id = ? AND o.status IN ("completed", "shipped") LIMIT 1
+        ');
+        $stmt->execute([$user_id, $product_id]);
+        return (bool)$stmt->fetchColumn();
+    } catch (PDOException $e) { log_pdo_exception($e, null, __FUNCTION__); return false; }
+}
+
+function get_product_reviews($product_id, $approved_only = true) {
+    global $pdo;
+    if (!db_has_connection() || !$product_id) return [];
+    try {
+        $sql = 'SELECT r.*, u.first_name, u.last_name FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ?';
+        if ($approved_only) $sql .= ' AND r.approved = 1 ';
+        $sql .= ' ORDER BY r.created_at DESC';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$product_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) { log_pdo_exception($e, null, __FUNCTION__); return []; }
+}
+
+function add_product_review($product_id, $user_id, $rating, $title, $body, $auto_approve = true) {
+    global $pdo;
+    if (!db_has_connection() || !$product_id || !$user_id) return false;
+    try {
+        $stmt = $pdo->prepare('INSERT INTO reviews (product_id, user_id, rating, title, body, approved) VALUES (?, ?, ?, ?, ?, ?)');
+        return $stmt->execute([$product_id, $user_id, $rating, $title, $body, $auto_approve ? 1 : 0]);
+    } catch (PDOException $e) { log_pdo_exception($e, null, __FUNCTION__); return false; }
+}
+
+function get_product_average_rating($product_id) {
+    global $pdo;
+    $default = ['avg' => 0, 'count' => 0];
+    if (!db_has_connection() || !$product_id) return $default;
+    try {
+        $stmt = $pdo->prepare('SELECT AVG(rating) as avg_rating, COUNT(*) as total_reviews FROM reviews WHERE product_id = ? AND approved = 1');
+        $stmt->execute([$product_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result && $result['total_reviews'] > 0) return ['avg' => round((float)$result['avg_rating'], 1), 'count' => (int)$result['total_reviews']];
+        return $default;
+    } catch (PDOException $e) { log_pdo_exception($e, null, __FUNCTION__); return $default; }
+}
 ?>

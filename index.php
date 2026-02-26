@@ -196,6 +196,30 @@ if ((($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') && isset($_POST['add_to_cart
     }
 }
 
+// Handle Customer Review Submission
+if ($page === 'product' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_POST['action']) && $_POST['action'] === 'submit_review') {
+    $product_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    $user_id = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
+    $rating = isset($_POST['rating']) ? (int)$_POST['rating'] : 0;
+    $title = trim($_POST['title'] ?? '');
+    $body = trim($_POST['body'] ?? '');
+    if ($product_id > 0 && $user_id && $rating >= 1 && $rating <= 5 && $title && $body) {
+        if (has_user_purchased_product($user_id, $product_id)) {
+            if (add_product_review($product_id, $user_id, $rating, $title, $body, true)) {
+                $_SESSION['review_success'] = 'Thank you for your review! It has been posted successfully.';
+            } else {
+                $_SESSION['review_error'] = 'An error occurred while saving your review. Please try again.';
+            }
+        } else {
+            $_SESSION['review_error'] = 'You must purchase this product before leaving a review.';
+        }
+    } else {
+        $_SESSION['review_error'] = 'Please fill out all fields and select a star rating.';
+    }
+    header('Location: index.php?page=product&id=' . $product_id);
+    exit;
+}
+
 // Handle cart actions (remove item / update quantity)
 if ($page === 'cart' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $action = $_POST['action'] ?? '';
