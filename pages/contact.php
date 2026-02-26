@@ -23,7 +23,7 @@
                     <div class="h-100 p-4 border rounded shadow-sm">
                         <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
                         <h5 class="fw-bold">Email Us</h5>
-                        <p class="text-muted">support@shellycorp.com</p>
+                        <p class="text-muted">support@synora.dev</p>
                     </div>
                 </div>
             </div>
@@ -31,24 +31,43 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4 p-md-5">
                     <h3 class="mb-4">Send us a Message</h3>
-                    <form>
+                    
+                    <?php if (isset($_SESSION['contact_success'])): ?>
+                        <div class="alert alert-success">
+                            <?php echo htmlspecialchars($_SESSION['contact_success']);
+    unset($_SESSION['contact_success']); ?>
+                        </div>
+                    <?php
+endif; ?>
+                    
+                    <?php if (isset($_SESSION['contact_error'])): ?>
+                        <div class="alert alert-danger">
+                            <?php echo htmlspecialchars($_SESSION['contact_error']);
+    unset($_SESSION['contact_error']); ?>
+                        </div>
+                    <?php
+endif; ?>
+
+                    <form method="post" action="index.php?page=contact">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                        <input type="hidden" name="action" value="submit_contact">
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="name" class="form-label">Your Name</label>
-                                <input type="text" class="form-control" id="name" placeholder="John Doe">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="email" class="form-label">Your Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="john@example.com">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" placeholder="How can we help?">
+                            <input type="text" class="form-control" id="subject" name="subject" placeholder="How can we help?" required>
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" rows="5" placeholder="Write your message here..."></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary px-4">Send Message</button>
                     </form>

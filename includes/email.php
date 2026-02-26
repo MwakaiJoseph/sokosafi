@@ -75,4 +75,84 @@ function send_reset_password_email($to_email, $to_name, $reset_link)
         return false;
     }
 }
+
+function send_contact_us_email($user_name, $user_email, $subject, $message, $support_email)
+{
+    $api_key = getenv('SENDGRID_API_KEY') ?: '';
+    $from_email = getenv('SENDGRID_FROM_EMAIL') ?: 'noreply@sokosafi.com';
+
+    if (!$api_key) {
+        error_log('SendGrid Error: API Key is missing. Check SENDGRID_API_KEY env var.');
+        return false;
+    }
+
+    $url = 'https://api.sendgrid.com/v3/mail/send';
+
+    // Sanitize user input for HTML context to prevent XSS in email client
+    $safe_name = htmlspecialchars($user_name);
+    $safe_email = htmlspecialchars($user_email);
+    $safe_subject = htmlspecialchars($subject);
+    $safe_message = nl2br(htmlspecialchars($message));
+
+    $data = [
+        'personalizations' => [
+            [
+                'to' => [
+                    [
+                        'email' => $support_email,
+                        'name' => 'SokoSafi Support'
+                    ]
+                ],
+                'subject' => "New Contact Form Submission: {$safe_subject}"
+            ]
+        ],
+        'from' => [
+            'email' => $from_email,
+            'name' => 'SokoSafi Website Form' // Use system verified email, identify as website
+        ],
+        'reply_to' => [
+            'email' => $user_email,
+            'name' => $user_name // Set reply-to so support can hit 'reply' directly
+        ],
+        'content' => [
+            [
+                'type' => 'text/html',
+                'value' => "
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+                        <h2 style='color: #4f46e5;'>New Message from Contact Form</h2>
+                        <p><strong>From:</strong> {$safe_name} ({$safe_email})</p>
+                        <p><strong>Subject:</strong> {$safe_subject}</p>
+                        <hr style='border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;'/>
+                        <p style='white-space: pre-wrap;'>{$safe_message}</p>
+                        <hr style='border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;'/>
+                        <p style='color: #64748b; font-size: 12px;'>This message was sent via the SokoSafi Contact Us page. You can reply directly to this email to respond to the user.</p>
+                    </div>
+                "
+            ]
+        ]
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $api_key,
+        'Content-Type: application/json'
+    ]);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+
+    if ($http_code >= 200 && $http_code < 300) {
+        return true;
+    }
+    else {
+        error_log("SendGrid Contact Form Error [$http_code]: $response | cURL: $curl_error");
+        return false;
+    }
+}
 ?>
