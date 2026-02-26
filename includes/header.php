@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SokoSafi</title>
+    <meta name="description" content="<?php echo htmlspecialchars($meta_description ?? 'SokoSafi E-Commerce Store'); ?>">
     <?php
 // Determine base path so includes work from /admin and root pages
 $in_admin = (basename(getcwd()) === 'admin');
