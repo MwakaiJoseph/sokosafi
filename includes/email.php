@@ -4,8 +4,8 @@
 
 function send_reset_password_email($to_email, $to_name, $reset_link)
 {
-    $api_key = getenv('SENDGRID_API_KEY') ?: '';
-    $from_email = getenv('SENDGRID_FROM_EMAIL') ?: 'noreply@sokosafi.com'; // Default fallback
+    $api_key = getenv('SENDGRID_API_KEY') ?: ($_ENV['SENDGRID_API_KEY'] ?? ($_SERVER['SENDGRID_API_KEY'] ?? ''));
+    $from_email = getenv('SENDGRID_FROM_EMAIL') ?: ($_ENV['SENDGRID_FROM_EMAIL'] ?? ($_SERVER['SENDGRID_FROM_EMAIL'] ?? 'noreply@sokosafi.com'));
 
     if (!$api_key) {
         error_log('SendGrid Error: API Key is missing. Check SENDGRID_API_KEY env var.');
@@ -78,8 +78,8 @@ function send_reset_password_email($to_email, $to_name, $reset_link)
 
 function send_contact_us_email($user_name, $user_email, $subject, $message, $support_email)
 {
-    $api_key = getenv('SENDGRID_API_KEY') ?: '';
-    $from_email = getenv('SENDGRID_FROM_EMAIL') ?: 'noreply@sokosafi.com';
+    $api_key = getenv('SENDGRID_API_KEY') ?: ($_ENV['SENDGRID_API_KEY'] ?? ($_SERVER['SENDGRID_API_KEY'] ?? ''));
+    $from_email = getenv('SENDGRID_FROM_EMAIL') ?: ($_ENV['SENDGRID_FROM_EMAIL'] ?? ($_SERVER['SENDGRID_FROM_EMAIL'] ?? 'noreply@sokosafi.com'));
 
     if (!$api_key) {
         error_log('SendGrid Error: API Key is missing. Check SENDGRID_API_KEY env var.');
