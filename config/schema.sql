@@ -271,6 +271,9 @@ CREATE TABLE `users` (
   `last_name` varchar(100) DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `reset_token` varchar(255) DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL,
+  `remember_token` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
