@@ -116,6 +116,11 @@ function handle_google_oauth()
             }
             else {
                 // Completely new user
+                if (check_deleted_account_cooldown($email)) {
+                    $_SESSION['flash'] = 'Account recovery period active. You cannot re-register with this email for 30 days after deletion.';
+                    header('Location: index.php?page=register');
+                    exit;
+                }
                 $new_id = create_google_user($email, $given_name, $family_name, $google_id);
                 if ($new_id) {
                     $user = get_user_by_google_id($google_id);

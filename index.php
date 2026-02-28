@@ -148,6 +148,30 @@ if ($page === 'register' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $auth_error = 'Failed to create account. Please try again.';
             }
         }
+        }
+    }
+}
+
+if ($page === 'profile' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['action'] ?? '') === 'delete_account') {
+    if (isset($_SESSION['user']) && isset($_SESSION['user']['id'])) {
+        $user_id = (int)$_SESSION['user']['id'];
+        $user_email = $_SESSION['user']['email'] ?? '';
+        
+        // Log the deletion and remove the user
+        if ($user_email && delete_user_account($user_id, $user_email)) {
+            // Unset remember me cookie if present
+            if (isset($_COOKIE['remember_me'])) {
+                setcookie('remember_me', '', time() - 3600, '/');
+            }
+            // Clear checkout snapshot references or rely on DB ON DELETE
+            session_destroy();
+            session_start();
+            $_SESSION['flash'] = 'Your account has been permanently deleted.';
+            header('Location: index.php?page=home');
+            exit;
+        } else {
+            $_SESSION['flash'] = 'Failed to delete account. Please contact support.';
+        }
     }
 }
 

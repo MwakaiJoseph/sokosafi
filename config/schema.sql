@@ -570,6 +570,20 @@ ALTER TABLE `reviews`
 ALTER TABLE `user_roles`
   ADD CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deleted_accounts`
+--
+
+CREATE TABLE `deleted_accounts` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) NOT NULL,
+  `deleted_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

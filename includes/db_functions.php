@@ -305,6 +305,45 @@ function get_user_by_email($email)
     }
 }
 
+// Delete user account and log it for 30-day cooldown
+function delete_user_account($user_id, $email) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        $pdo->beginTransaction();
+        
+        // Log the deletion to prevent re-registration for 30 days
+        $stmt_log = $pdo->prepare('INSERT INTO deleted_accounts (email) VALUES (:email)');
+        $stmt_log->execute([':email' => $email]);
+        
+        // Delete the user (this cascades to user_roles, and SET NULLs orders via schema)
+        $stmt_del = $pdo->prepare('DELETE FROM users WHERE id = :id');
+        $stmt_del->execute([':id' => $user_id]);
+        
+        $pdo->commit();
+        return true;
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false;
+    }
+}
+
+// Check if email is in the 30-day cooldown period
+function check_deleted_account_cooldown($email) {
+    global $pdo;
+    if (!db_has_connection()) return false;
+    try {
+        // Check if there is a deletion record less than 30 days old
+        $stmt = $pdo->prepare('SELECT 1 FROM deleted_accounts WHERE email = :email AND deleted_at > DATE_SUB(NOW(), INTERVAL 30 DAY) LIMIT 1');
+        $stmt->execute([':email' => $email]);
+        return (bool)$stmt->fetchColumn();
+    } catch (PDOException $e) {
+        log_pdo_exception($e, null, __FUNCTION__);
+        return false; // Fail open to allow registration if tracking breaks
+    }
+}
+
 // Create new user
 function create_user($name, $email, $password)
 {
