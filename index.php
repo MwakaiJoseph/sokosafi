@@ -128,6 +128,8 @@ if ($page === 'register' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $auth_error = 'Name, email, and password are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $auth_error = 'Please enter a valid email address.';
+    } elseif (check_deleted_account_cooldown($email)) {
+        $auth_error = 'Account recovery period active. You cannot re-register with this email for 30 days after deletion.';
     } else {
         $existing = get_user_by_email($email);
         if ($existing) {
@@ -148,10 +150,8 @@ if ($page === 'register' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $auth_error = 'Failed to create account. Please try again.';
             }
         }
-        }
     }
 }
-
 if ($page === 'profile' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['action'] ?? '') === 'delete_account') {
     if (isset($_SESSION['user']) && isset($_SESSION['user']['id'])) {
         $user_id = (int)$_SESSION['user']['id'];
