@@ -1,11 +1,13 @@
 /* Custom Header Styles - Dark Theme */
 :root {
-  --header-bg: rgba(11, 18, 32, 0.95);
-  /* Dark blue #0b1220 */
-  --header-border: #1f2937;
-  --header-text: #e5e7eb;
-  --header-accent: #b38b59;
-  /* Gold/Bronze custom color */
+  --header-bg: rgba(15, 42, 68, 0.95);
+  /* Deep Space Blue #0f2a44 */
+  --header-border: #9aa6b2;
+  /* Cool Steel */
+  --header-text: #f4f6f8;
+  /* Platinum */
+  --header-accent: #e6a89a;
+  /* Powder Blush */
   --header-height: 60px;
   /* Increased height for better touch targets on mobile */
 }
@@ -238,11 +240,11 @@ body {
 
 /* Fix for card text readability on light theme */
 .card {
-  color: var(--text, #1f2937) !important;
+  color: var(--text, #1c2430) !important;
 }
 
 .card .text-muted {
-  color: #6b7280 !important;
+  color: #7a8794 !important;
 }
 
 /* Footer Brand */
