@@ -172,8 +172,8 @@ body {
 }
 
 .header-area .btn-primary:hover {
-  background-color: #a07a4d;
-  border-color: #a07a4d;
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
 }
 
 .header-area .btn-outline-primary {
@@ -200,7 +200,7 @@ body {
 }
 
 .navbar-toggler:focus {
-  box-shadow: 0 0 0 2px rgba(179, 139, 89, 0.5);
+  box-shadow: 0 0 0 2px rgba(230, 168, 154, 0.5);
 }
 
 /* Dropdown */
