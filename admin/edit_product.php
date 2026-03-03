@@ -72,7 +72,7 @@ $products = db_has_connection() ? get_products(null, null) : [];
         <div class="card h-100">
           <div class="card-body">
             <h5 class="card-title mb-2"><?php echo htmlspecialchars($p['name']); ?> (ID <?php echo (int)$p['id']; ?>)</h5>
-            <form method="post" class="d-grid gap-2">
+            <form method="post" enctype="multipart/form-data" class="d-grid gap-2">
               <input type="hidden" name="id" value="<?php echo (int)$p['id']; ?>" />
               <label>Name <input type="text" name="name" value="<?php echo htmlspecialchars($p['name']); ?>" class="form-control" /></label>
               <label>Slug <input type="text" name="slug" value="<?php echo htmlspecialchars($p['slug']); ?>" class="form-control" /></label>
@@ -98,6 +98,10 @@ $products = db_has_connection() ? get_products(null, null) : [];
                   <div class="text-muted">No categories found.</div>
                 <?php endif; ?>
               </fieldset>
+                            <label>Add Additional Images 
+                <input type="file" name="new_images[]" class="form-control" accept="image/*" multiple max="10" />
+                <small class="text-muted d-block">Uploading here will ADD to existing images (max 10 total usually).</small>
+              </label>
               <div class="d-flex gap-2">
                 <button class="btn btn-dark" type="submit" name="action" value="update">Update</button>
                 <button class="btn btn-outline-danger" type="submit" name="action" value="delete" onclick="return confirm('Delete this product?');">Delete</button>
